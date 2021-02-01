@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import './App.css';
+import { IPokemon } from './types/pokemon.types';
 import PokemonFilter from './components/PokemonFilter';
 import PokemonInfo from './components/PokemonInfo';
 import PokemonTable from './components/PokemonTable';
-import { IPokemon } from './types/pokemon.types';
+import PokemonContext from './PokemonContext';
 
 const App = () => {
   const [pokemons, setPokemons] = useState<IPokemon[]>([]);
@@ -16,15 +17,30 @@ const App = () => {
       .then((pokemons: IPokemon[]) => setPokemons(pokemons));
   }, []);
 
+  if (!pokemons) {
+    return <div>Loading pokemons...</div>
+  }
+
   return (
-    <div className="main">
-      <h1 className="title">Pokemon Search</h1>
-      <PokemonFilter filter={filter} onChange={setFilter} />
-      <div className="container">
-        <PokemonTable filter={filter} pokemons={pokemons} setSelected={setSelectedPokemon} />
-        <PokemonInfo pokemon={selectedPokemon} />
+    <PokemonContext.Provider
+      value={{
+        pokemons,
+        filter,
+        selectedPokemon,
+        setPokemons,
+        setFilter,
+        setSelectedPokemon
+      }}
+    >
+      <div className="main">
+        <h1 className="title">Pokemon Search</h1>
+        <PokemonFilter />
+        <div className="container">
+          <PokemonTable />
+          <PokemonInfo />
+        </div>
       </div>
-    </div>
+    </PokemonContext.Provider>
   );
 }
 
