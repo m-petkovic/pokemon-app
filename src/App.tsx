@@ -1,37 +1,34 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer } from 'react';
 import './App.css';
 import { IPokemon } from './types/pokemon.types';
 import PokemonFilter from './components/PokemonFilter';
 import PokemonInfo from './components/PokemonInfo';
 import PokemonTable from './components/PokemonTable';
 import PokemonContext from './PokemonContext';
+import pokemonReducer from './PokemonReducer';
 
 const App = () => {
-  const [pokemons, setPokemons] = useState<IPokemon[]>([]);
-  const [filter, setFilter] = useState("");
-  const [selectedPokemon, setSelectedPokemon] = useState<IPokemon | null>(null);
+  const [state, dispatch] = useReducer(pokemonReducer, {
+    filter: "",
+    pokemons: [],
+    selectedPokemon: null
+  });
 
   useEffect(() => {
     fetch("http://localhost:3000/pokemon.json")
       .then(res => res.json())
-      .then((pokemons: IPokemon[]) => setPokemons(pokemons));
+      .then((pokemons: IPokemon[]) => dispatch({
+        type: 'SET_POKEMONS',
+        payload: pokemons
+      }));
   }, []);
 
-  if (!pokemons) {
+  if (!state.pokemons) {
     return <div>Loading pokemons...</div>
   }
 
   return (
-    <PokemonContext.Provider
-      value={{
-        pokemons,
-        filter,
-        selectedPokemon,
-        setPokemons,
-        setFilter,
-        setSelectedPokemon
-      }}
-    >
+    <PokemonContext.Provider value={{ state, dispatch }}>
       <div className="main">
         <h1 className="title">Pokemon Search</h1>
         <PokemonFilter />

@@ -1,9 +1,10 @@
 import { useContext } from "react";
 import PokemonContext from "../PokemonContext";
-import { IPokemon, PokemonBase } from "../types/pokemon.types";
+import { PokemonBase } from "../types/pokemon.types";
+import { State } from "../types/reducer.types";
 
 const PokemonInfo = () => {
-    const { selectedPokemon } = useContext(PokemonContext) as { selectedPokemon: IPokemon | null };
+    const { state: { selectedPokemon}} = useContext(PokemonContext) as { state: State };
 
     return selectedPokemon ? (
         <div>
