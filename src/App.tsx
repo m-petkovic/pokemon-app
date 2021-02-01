@@ -15,7 +15,7 @@ const App = () => {
   });
 
   useEffect(() => {
-    fetch("http://localhost:3000/pokemon.json")
+    fetch("http://localhost:3000/pokemon-app/pokemon.json")
       .then(res => res.json())
       .then((pokemons: IPokemon[]) => dispatch({
         type: 'SET_POKEMONS',
